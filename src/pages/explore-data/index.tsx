@@ -16,51 +16,32 @@ export const Route = createFileRoute('/explore-data/')({
 // CUSTOMIZE: the filter definitions
 const filterConfigs: FilterConfig[] = [
   {
-    field: 'Discovery Method',
-    label: 'Discovery Method',
+    field: 'properties.mag',
+    label: 'Magnitude',
+    operator: 'between-inclusive',
+    filterComponent: 'RangeSlider',
+    filterProps: {
+      min: -2,
+      max: 10,
+      step: 0.1,
+    },
+  },
+  {
+    field: 'properties.status',
+    label: 'Status',
     operator: 'contains-one-of',
     filterComponent: 'CheckboxList',
     filterProps: {
       options: [
         {
-          label: 'Astrometry',
-          value: 'Astrometry',
+          label: 'Automatic',
+          value: 'automatic',
         },
         {
-          label: 'Disk Kinematics',
-          value: 'Disk Kinematics',
-        },
-        {
-          label: 'Eclipse Timing Variations',
-          value: 'Eclipse Timing Variations',
-        },
-        {
-          label: 'Imaging',
-          value: 'Imaging',
-        },
-        {
-          label: 'Microlensing',
-          value: 'Microlensing',
-        },
-        {
-          label: 'Radial Velocity',
-          value: 'Radial Velocity',
-        },
-        {
-          label: 'Transit',
-          value: 'Transit',
+          label: 'Reviewed',
+          value: 'reviewed',
         },
       ],
-    },
-  },
-  {
-    field: 'Mass',
-    label: 'Mass',
-    operator: 'between-inclusive',
-    filterComponent: 'RangeSlider',
-    filterProps: {
-      min: 0,
-      max: 10000,
     },
   },
 ];
@@ -92,9 +73,9 @@ function DataExplorer() {
       <Box>
         <PageHeader
           // CUSTOMIZE: the page title
-          pageTitle="Explore Data App"
+          pageTitle="USGS Earthquake Data Explorer"
           // CUSTOMIZE: the page description
-          description="Description of this app"
+          description="Explore recent earthquake data from the USGS Earthquake Hazards Program"
           sx={{
             marginBottom: 1,
             padding: 2,
