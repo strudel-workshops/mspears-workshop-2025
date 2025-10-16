@@ -25,13 +25,14 @@ export const DataView: React.FC<DataViewProps> = ({
   const [pageSize, setPageSize] = useState(25);
   const [offset, setOffest] = useState(page * pageSize);
   // CUSTOMIZE: the unique ID field for the data source
-  const dataIdField = 'Id';
+  const dataIdField = 'id';
   // CUSTOMIZE: query mode, 'client' or 'server'
   const queryMode = 'client';
   const { isPending, isFetching, isError, data, error } = useListQuery({
     activeFilters,
     // CUSTOMIZE: the table data source
-    dataSource: 'dummy-data/exoplanets.csv',
+    dataSource:
+      'https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson',
     filterConfigs,
     offset,
     page,
@@ -39,6 +40,9 @@ export const DataView: React.FC<DataViewProps> = ({
     queryMode,
     staticParams: null,
   });
+
+  // Extract features array from GeoJSON response
+  const earthquakeData = data?.features || [];
 
   const handleRowClick = (rowData: any) => {
     setPreviewItem(rowData.row);
@@ -81,7 +85,12 @@ export const DataView: React.FC<DataViewProps> = ({
     <>
       {isFetching && <LinearProgress variant="indeterminate" />}
       <SciDataGrid
-        rows={filterData(data, activeFilters, filterConfigs, searchTerm)}
+        rows={filterData(
+          earthquakeData,
+          activeFilters,
+          filterConfigs,
+          searchTerm
+        )}
         pagination
         paginationMode={queryMode}
         onPaginationModelChange={handlePaginationModelChange}
@@ -89,39 +98,35 @@ export const DataView: React.FC<DataViewProps> = ({
         // CUSTOMIZE: the table columns
         columns={[
           {
-            field: 'Planet Name',
-            headerName: 'Planet Name',
-            width: 200,
-          },
-          {
-            field: 'Planet Host',
-            headerName: 'Planet Host',
-            width: 200,
-          },
-          {
-            field: 'Discovery Method',
-            headerName: 'Discovery Method',
-            width: 200,
-          },
-          {
-            field: 'Orbital Period Days',
-            headerName: 'Orbital Period',
-            units: 'days',
+            field: 'properties.mag',
+            headerName: 'Magnitude',
             type: 'number',
-            width: 200,
+            width: 150,
+            valueGetter: (value: any, row: any) => row?.properties?.mag,
           },
           {
-            field: 'Mass',
-            headerName: 'Mass',
-            units: 'Earth Mass',
-            type: 'number',
-            width: 200,
+            field: 'properties.status',
+            headerName: 'Status',
+            width: 150,
+            valueGetter: (value: any, row: any) => row?.properties?.status,
           },
           {
-            field: 'Eccentricity',
-            headerName: 'Eccentricity',
-            type: 'number',
-            width: 200,
+            field: 'properties.type',
+            headerName: 'Type',
+            width: 150,
+            valueGetter: (value: any, row: any) => row?.properties?.type,
+          },
+          {
+            field: 'properties.title',
+            headerName: 'Title',
+            width: 400,
+            valueGetter: (value: any, row: any) => row?.properties?.title,
+          },
+          {
+            field: 'properties.place',
+            headerName: 'Place',
+            width: 300,
+            valueGetter: (value: any, row: any) => row?.properties?.place,
           },
         ]}
         disableColumnSelector
